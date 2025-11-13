@@ -1,0 +1,16 @@
+{
+  "type": "PTE",
+  "templateUrl": "https://github.com/microsoft/AL-Go-PTE",
+  "artifact": "main",
+  "repoVersion": "latest",
+  "appFolders": [
+    "."
+  ],
+  "testFolders": [],
+  "bcptTestFolders": [],
+  "country": "us",
+  "artifact": "///us/Current",
+  "compilerFeatures": [
+    "NoImplicitWith"
+  ]
+}

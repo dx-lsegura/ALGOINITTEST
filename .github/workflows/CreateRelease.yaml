@@ -1,0 +1,72 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      appVersion:
+        description: App version to promote to release (default is latest)
+        required: false
+        default: 'latest'
+      name:
+        description: Name of this release
+        required: true
+        default: ''
+      prerelease:
+        description: Prerelease (Y/N)
+        required: false
+        default: 'N'
+      draft:
+        description: Draft (Y/N)
+        required: false
+        default: 'N'
+      createReleaseBranch:
+        description: Create Release Branch (Y/N)
+        required: false
+        default: 'N'
+      updateVersionNumber:
+        description: New Version Number in main branch. Use Major.Minor for absolute change, use +Major.Minor for incremental change.
+        required: false
+        default: ''
+      directCommit:
+        description: Direct COMMIT (Y/N)
+        required: false
+        default: 'N'
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  CreateRelease:
+    runs-on: [ windows-latest ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize the workflow
+        id: init
+        uses: microsoft/AL-Go-Actions/WorkflowInitialize@v8.0
+
+      - name: Read settings
+        id: ReadSettings
+        uses: microsoft/AL-Go-Actions/ReadSettings@v8.0
+        with:
+          shell: powershell
+
+      - name: Create release
+        uses: microsoft/AL-Go-Actions/CreateRelease@v8.0
+        with:
+          shell: powershell
+          parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
+          appVersion: ${{ github.event.inputs.appVersion }}
+          name: ${{ github.event.inputs.name }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          draft: ${{ github.event.inputs.draft }}
+          createReleaseBranch: ${{ github.event.inputs.createReleaseBranch }}
+          updateVersionNumber: ${{ github.event.inputs.updateVersionNumber }}
+          directCommit: ${{ github.event.inputs.directCommit }}
